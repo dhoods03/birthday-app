@@ -14,25 +14,25 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v15.0 - NOOR OF THE SOUL EDITION) ---
+# --- THE STORY GAME (v16.0 - MOBILE TURBO & AUDIO FIX) ---
 game_html = """
-<div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
+<div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop preload="auto">
         <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c1e0b5d5d9.mp3" type="audio/mpeg">
     </audio>
-    <audio id="catch-sound">
+    <audio id="catch-sound" preload="auto">
         <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="story-card" style="position: absolute; width: 310px; top: 40px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-1.5deg); transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);">
+    <div id="story-card" style="position: absolute; width: 310px; top: 40px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-1.5deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
         <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">Bismillah</h3>
         <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, another year is a gift from Al-Wahhab. Tap to begin a journey through the light you bring into the world.</p>
-        <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif;">Begin →</button>
+        <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif; font-size: 1rem; -webkit-tap-highlight-color: transparent;">Begin →</button>
     </div>
 
-    <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.8s;"></canvas>
+    <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.5s;"></canvas>
     
     <div id="score-ui" style="margin-top: 15px; color: #2D5A52; font-weight: bold; font-size: 1.1rem;">
         Blessings Collected: <span id="points">0</span> / 80
@@ -53,69 +53,39 @@ game_html = """
 
     let score = 0;
     let active = false;
-    let basket = { x: 160, y: 440, w: 90, h: 16 };
+    let basket = { x: 150, y: 440, w: 100, h: 20 }; // Wider for better touch
     let items = [];
     let stars = [];
     let frame = 0;
 
-    for(let i=0; i<30; i++) {
-        stars.push({ x: Math.random()*400, y: Math.random()*500, size: Math.random()*2, opacity: Math.random() });
+    // Pre-generate stars for performance
+    for(let i=0; i<20; i++) {
+        stars.push({ x: Math.random()*400, y: Math.random()*500, size: Math.random()*1.5 });
     }
 
     const milestones = {
-        10: { 
-            title: "Your Ihsan (Excellence)", 
-            text: "'Allah loves those who do good.' The way you carry yourself with such kindness is a form of worship, Yeka. May it always be your guiding light.", 
-            img: "✨" 
-        },
-        20: { 
-            title: "Your Sabr (Steadfastness)", 
-            text: "'Allah is with the patient.' (2:153). Your heart remains a steady, constant light through every season. That strength is a rare and beautiful blessing.", 
-            img: "🤍" 
-        },
-        30: { 
-            title: "Your Iman (Faith)", 
-            text: "Watching the way you trust in His plan is a reminder of what true faith looks like. May your heart always find its home in Noor.", 
-            img: "🌙" 
-        },
-        40: { 
-            title: "Your Sujud (Peace)", 
-            text: "May every moment you spend in prayer wrap your soul in tranquility. You deserve a peace that is as deep as your devotion.", 
-            img: "🤲" 
-        },
-        50: { 
-            title: "His Qadr (Wisdom)", 
-            text: "Allah is the best of planners. I am deeply grateful to His Qadr for allowing our worlds to touch and for the chance to see the goodness in you.", 
-            img: "⭐" 
-        },
-        60: { 
-            title: "Your Forgiving Nature", 
-            text: "To forgive is a trait of the noble. Your ability to see the purity in others is a reflection of the purity within your own soul.", 
-            img: "🍃" 
-        },
-        70: { 
-            title: "Your Shukr (Gratitude)", 
-            text: "A grateful heart is a magnet for miracles. May Allah continue to increase you in blessings for the gratitude you show every day.", 
-            img: "🌸" 
-        },
-        80: { 
-            title: "Eid Milad Yeka!", 
-            text: "May this year be a testament to His mercy. May Allah grant every secret dua you've ever whispered. Happy Birthday, Yeka!", 
-            img: "🎁" 
-        }
+        10: { title: "Your Ihsan", text: "'Allah loves those who do good.' The way you carry yourself with such kindness is a form of worship, Yeka.", img: "✨" },
+        20: { title: "Your Sabr", text: "'Allah is with the patient.' Your heart remains a steady, constant light through every season. That strength is a blessing.", img: "🤍" },
+        30: { title: "Your Iman", text: "Watching the way you trust in His plan is a reminder of what true faith looks like. May your heart always find its home in Noor.", img: "🌙" },
+        40: { title: "Your Sujud", text: "May every moment you spend in prayer wrap your soul in tranquility. You deserve a peace as deep as your devotion.", img: "🤲" },
+        50: { title: "His Qadr", text: "Allah is the best of planners. I am deeply grateful to His Qadr for allowing our worlds to touch and for the chance to see your goodness.", img: "⭐" },
+        60: { title: "Your Noble Soul", text: "To forgive is a trait of the noble. Your ability to see the purity in others reflects the purity within your own soul.", img: "🍃" },
+        70: { title: "Your Shukr", text: "A grateful heart is a magnet for miracles. May Allah continue to increase you in blessings for the gratitude you show.", img: "🌸" },
+        80: { title: "Eid Milad Yeka!", text: "May Allah bless your path with light, shower you with mercy, and grant every secret dua you've ever whispered. Happy Birthday, Yeka!", img: "🎁" }
     };
 
     function startExperience() {
-        bgMusic.volume = 0.4;
-        bgMusic.play();
+        // Unlock Audio Context for iOS/Android
+        bgMusic.play().catch(e => console.log("Audio play blocked"));
+        catchSound.play(); catchSound.pause(); // Pre-load the chime
         nextStep();
     }
 
     function nextStep() {
         if (score >= 80) { location.reload(); return; }
-        card.style.transform = "translateY(-700px) rotate(8deg)";
+        card.style.transform = "translateY(-800px) scale(0.5)";
         canvas.style.opacity = "1";
-        setTimeout(() => { active = true; }, 600);
+        setTimeout(() => { active = true; }, 500);
     }
 
     function showCard(data) {
@@ -124,65 +94,64 @@ game_html = """
         sTitle.innerText = data.title;
         sText.innerText = data.text;
         sImg.innerText = data.img;
-        card.style.transform = "translateY(0) rotate(" + (Math.random() * 4 - 2) + "deg)";
-        
-        if(score >= 80) { triggerFinalConfetti(); }
+        card.style.transform = "translateY(0) scale(1) rotate(" + (Math.random() * 4 - 2) + "deg)";
+        if(score >= 80) triggerFinalConfetti();
     }
 
     function triggerFinalConfetti() {
-        var duration = 8 * 1000;
-        var animationEnd = Date.now() + duration;
-        var interval = setInterval(function() {
-            var timeLeft = animationEnd - Date.now();
-            if (timeLeft <= 0) return clearInterval(interval);
-            confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 }, colors: ['#2D5A52', '#D4AF37', '#ffffff'] });
-        }, 300);
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         document.getElementById('card-btn').innerText = "Replay Journey";
     }
 
-    function move(e) {
+    function handleTouch(e) {
         if (!active) return;
         let rect = canvas.getBoundingClientRect();
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let x = clientX - rect.left;
-        basket.x = (x * (canvas.width / rect.width)) - basket.w / 2;
+        let touchX = e.touches[0].clientX - rect.left;
+        let scaleX = canvas.width / rect.width;
+        basket.x = (touchX * scaleX) - basket.w / 2;
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
     }
 
-    canvas.addEventListener('mousemove', move);
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e); }, {passive: false});
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleTouch(e); }, {passive: false});
+    canvas.addEventListener('mousemove', (e) => { 
+        let rect = canvas.getBoundingClientRect();
+        basket.x = ((e.clientX - rect.left) * (canvas.width / rect.width)) - basket.w / 2;
+    });
 
     function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Background stars
+        ctx.fillStyle = "rgba(45, 90, 82, 0.3)";
         stars.forEach(s => {
-            s.opacity += (Math.random() - 0.5) * 0.04;
-            if(s.opacity < 0) s.opacity = 0; if(s.opacity > 1) s.opacity = 1;
-            ctx.fillStyle = `rgba(45, 90, 82, ${s.opacity})`;
             ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
         });
 
         if (active) {
             frame++;
-            if (frame % 32 === 0) {
+            if (frame % 25 === 0) { // Faster spawning
                 items.push({ x: Math.random() * 370, y: -20, char: ['🌸','🌙','🎁','🤲','⭐'][Math.floor(Math.random()*5)] });
             }
+            
+            // Draw Basket
             ctx.fillStyle = '#2D5A52';
-            ctx.beginPath(); ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 5); ctx.fill();
+            ctx.beginPath(); ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 10); ctx.fill();
 
             for (let i = items.length - 1; i >= 0; i--) {
-                items[i].y += 4.5;
-                ctx.font = '28px serif';
+                items[i].y += 6; // Increased falling speed
+                ctx.font = '32px serif';
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
-                if (items[i].y > basket.y && items[i].y < basket.y + 20 &&
-                    items[i].x > basket.x - 10 && items[i].x < basket.x + basket.w + 10) {
+                
+                if (items[i].y > basket.y && items[i].y < basket.y + 25 &&
+                    items[i].x > basket.x - 15 && items[i].x < basket.x + basket.w + 15) {
                     catchSound.currentTime = 0;
                     catchSound.play();
                     items.splice(i, 1);
                     score++;
                     pointsEl.innerText = score;
                     if (milestones[score]) showCard(milestones[score]);
-                } else if (items[i].y > 510) {
-                    items.splice(i, 1);
-                }
+                } else if (items[i].y > 520) items.splice(i, 1);
             }
         }
         requestAnimationFrame(update);
@@ -193,4 +162,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>May this year be as radiant as your spirit.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Optimized for mobile.</i></p>", unsafe_allow_html=True)
