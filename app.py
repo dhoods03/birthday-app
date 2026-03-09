@@ -14,12 +14,12 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v10.0 - PILLARS OF GRACE EDITION) ---
+# --- THE STORY GAME (v12.0 - SACRED MELODIES EDITION) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
     
     <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c1e0b5d5d9.mp3" type="audio/mpeg">
     </audio>
     <audio id="catch-sound">
         <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
@@ -80,7 +80,7 @@ game_html = """
         },
         40: { 
             title: "Prayer (Salah)", 
-            text: "May every Sujud bring you closer to peace, and may your Duas always find their way to acceptance.", 
+            text: "May every Sujud bring you closer to peace, and may your heart always find tranquility in prayer.", 
             img: "🤲" 
         },
         50: { 
@@ -100,13 +100,13 @@ game_html = """
         },
         80: { 
             title: "Eid Milad Yeka!", 
-            text: "May this year be your most blessed one yet. May Allah shower you with affection and mercy. Happy Birthday, Yeka!", 
+            text: "May Allah bless your path with light, shower you with mercy, and grant all your heartfelt duas. Happy Birthday, Yeka!", 
             img: "🎁" 
         }
     };
 
     function startExperience() {
-        bgMusic.volume = 0.25;
+        bgMusic.volume = 0.4;
         bgMusic.play();
         nextStep();
     }
@@ -180,7 +180,9 @@ game_html = """
                     score++;
                     pointsEl.innerText = score;
                     if (milestones[score]) showCard(milestones[score]);
-                } else if (items[i].y > 510) items.splice(i, 1);
+                } else if (items[i].y > 510) {
+                    items.splice(i, 1);
+                }
             }
         }
         requestAnimationFrame(update);
