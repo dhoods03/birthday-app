@@ -1,8 +1,8 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# --- PAGE CONFIG ---
-st.set_set_page_config(page_title="A Journey for Yeka", page_icon="✨", layout="centered")
+# --- PAGE CONFIG (FIXED TYPO) ---
+st.set_page_config(page_title="A Journey for Yeka", page_icon="✨", layout="centered")
 
 st.markdown("""
     <style>
@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v23.0 - PRECISION FIX) ---
+# --- THE STORY GAME (v24.0 - STABLE RELEASE) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -49,7 +49,7 @@ game_html = """
 
     let score = 0;
     let active = false;
-    let shownMilestones = new Set(); // Prevents redundant popups
+    let shownMilestones = new Set();
     let basket = { x: 150, y: 440, w: 100, h: 20 };
     let items = [];
     let frame = 0;
@@ -85,7 +85,6 @@ game_html = """
         if(mKey == 80) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 
-    // Touch/Mouse logic
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
         let rect = canvas.getBoundingClientRect();
@@ -114,7 +113,7 @@ game_html = """
             ctx.beginPath(); ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 10); ctx.fill();
 
             for (let i = items.length - 1; i >= 0; i--) {
-                items[i].y += 6;
+                items[i].y += 6.5;
                 ctx.font = '30px serif';
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
                 
