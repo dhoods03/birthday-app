@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v16.0 - MOBILE TURBO & AUDIO FIX) ---
+# --- THE STORY GAME (v17.0 - ISLAMIC QUOTES EDITION) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -28,8 +28,8 @@ game_html = """
     <div id="story-card" style="position: absolute; width: 310px; top: 40px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-1.5deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
         <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">Bismillah</h3>
-        <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, another year is a gift from Al-Wahhab. Tap to begin a journey through the light you bring into the world.</p>
-        <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif; font-size: 1rem; -webkit-tap-highlight-color: transparent;">Begin →</button>
+        <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, a soul like yours is a gift. Tap to walk through the wisdom and light that you carry in your heart.</p>
+        <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif; font-size: 1rem;">Begin →</button>
     </div>
 
     <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.5s;"></canvas>
@@ -53,31 +53,61 @@ game_html = """
 
     let score = 0;
     let active = false;
-    let basket = { x: 150, y: 440, w: 100, h: 20 }; // Wider for better touch
+    let basket = { x: 150, y: 440, w: 100, h: 20 };
     let items = [];
     let stars = [];
     let frame = 0;
 
-    // Pre-generate stars for performance
     for(let i=0; i<20; i++) {
         stars.push({ x: Math.random()*400, y: Math.random()*500, size: Math.random()*1.5 });
     }
 
     const milestones = {
-        10: { title: "Your Ihsan", text: "'Allah loves those who do good.' The way you carry yourself with such kindness is a form of worship, Yeka.", img: "✨" },
-        20: { title: "Your Sabr", text: "'Allah is with the patient.' Your heart remains a steady, constant light through every season. That strength is a blessing.", img: "🤍" },
-        30: { title: "Your Iman", text: "Watching the way you trust in His plan is a reminder of what true faith looks like. May your heart always find its home in Noor.", img: "🌙" },
-        40: { title: "Your Sujud", text: "May every moment you spend in prayer wrap your soul in tranquility. You deserve a peace as deep as your devotion.", img: "🤲" },
-        50: { title: "His Qadr", text: "Allah is the best of planners. I am deeply grateful to His Qadr for allowing our worlds to touch and for the chance to see your goodness.", img: "⭐" },
-        60: { title: "Your Noble Soul", text: "To forgive is a trait of the noble. Your ability to see the purity in others reflects the purity within your own soul.", img: "🍃" },
-        70: { title: "Your Shukr", text: "A grateful heart is a magnet for miracles. May Allah continue to increase you in blessings for the gratitude you show.", img: "🌸" },
-        80: { title: "Eid Milad Yeka!", text: "May Allah bless your path with light, shower you with mercy, and grant every secret dua you've ever whispered. Happy Birthday, Yeka!", img: "🎁" }
+        10: { 
+            title: "On Kindness", 
+            text: "'A good word is like a good tree, its root is firmly fixed and its branches reach the sky.' (14:24). Yeka, your words and kindness are that beautiful tree to those around you.", 
+            img: "✨" 
+        },
+        20: { 
+            title: "On Sabr", 
+            text: "'Be patient with beautiful patience.' (70:5). Your strength isn't just in waiting, but in how beautifully you remain steady and constant through it all.", 
+            img: "🤍" 
+        },
+        30: { 
+            title: "On Faith", 
+            text: "'He found you lost and guided you.' (93:7). Watching you trust His light when things are unclear is a beautiful lesson in Iman.", 
+            img: "🌙" 
+        },
+        40: { 
+            title: "On Sujud", 
+            text: "'The closest a servant comes to his Lord is when he is in Sujud.' May your prayers always be your sanctuary and your source of hidden strength.", 
+            img: "🤲" 
+        },
+        50: { 
+            title: "On Qadr", 
+            text: "'Perhaps you hate a thing and it is good for you; and perhaps you love a thing and it is bad for you.' (2:216). Your trust in His timing is truly inspiring.", 
+            img: "⭐" 
+        },
+        60: { 
+            title: "On Forgiveness", 
+            text: "'The reward for an injury is an injury of equal degree, but if a person forgives and makes reconciliation, his reward is due from Allah.' (42:40). Your noble heart is proof of this.", 
+            img: "🍃" 
+        },
+        70: { 
+            title: "On Shukr", 
+            text: "'If you are grateful, I will surely increase you.' (14:7). May Allah multiply your joy and peace because of the gratitude you carry in your heart.", 
+            img: "🌸" 
+        },
+        80: { 
+            title: "Eid Milad Yeka!", 
+            text: "May Allah grant every secret dua you've ever whispered and bless your new year with His infinite mercy. Happy Birthday, Yeka!", 
+            img: "🎁" 
+        }
     };
 
     function startExperience() {
-        // Unlock Audio Context for iOS/Android
         bgMusic.play().catch(e => console.log("Audio play blocked"));
-        catchSound.play(); catchSound.pause(); // Pre-load the chime
+        catchSound.play(); catchSound.pause();
         nextStep();
     }
 
@@ -121,8 +151,6 @@ game_html = """
 
     function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Background stars
         ctx.fillStyle = "rgba(45, 90, 82, 0.3)";
         stars.forEach(s => {
             ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
@@ -130,16 +158,14 @@ game_html = """
 
         if (active) {
             frame++;
-            if (frame % 25 === 0) { // Faster spawning
+            if (frame % 25 === 0) {
                 items.push({ x: Math.random() * 370, y: -20, char: ['🌸','🌙','🎁','🤲','⭐'][Math.floor(Math.random()*5)] });
             }
-            
-            // Draw Basket
             ctx.fillStyle = '#2D5A52';
             ctx.beginPath(); ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 10); ctx.fill();
 
             for (let i = items.length - 1; i >= 0; i--) {
-                items[i].y += 6; // Increased falling speed
+                items[i].y += 6.5; 
                 ctx.font = '32px serif';
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
                 
@@ -162,4 +188,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Optimized for mobile.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Wisdom of the heart, built with gratitude.</i></p>", unsafe_allow_html=True)
