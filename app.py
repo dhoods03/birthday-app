@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v26.0) ---
+# --- THE STORY GAME (v27.0 - RESET LOGIC FIX) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -25,7 +25,7 @@ game_html = """
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
         <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">Bismillah</h3>
         <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, your life is a series of answered duas. Tap to see the light Allah has placed in your heart.</p>
-        <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer;">Begin →</button>
+        <button id="card-btn" onclick="handleButtonClick()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer;">Begin →</button>
     </div>
 
     <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.5s;"></canvas>
@@ -44,6 +44,7 @@ game_html = """
     const sTitle = document.getElementById('card-title');
     const sText = document.getElementById('card-text');
     const sImg = document.getElementById('image-placeholder');
+    const sBtn = document.getElementById('card-btn');
     const bgMusic = document.getElementById('bg-music');
     const catchSound = document.getElementById('catch-sound');
 
@@ -65,6 +66,26 @@ game_html = """
         80: { title: "Eid Milad, Yeka!", text: "May Allah grant every secret dua you've ever whispered and fill your year with barakah. I truly hope to get to know you more.", img: "🎁" }
     };
 
+    function handleButtonClick() {
+        if (score >= 80) {
+            resetGame();
+        } else {
+            startExperience();
+        }
+    }
+
+    function resetGame() {
+        score = 0;
+        pointsEl.innerText = "0";
+        shownMilestones.clear();
+        items = [];
+        sBtn.innerText = "Begin →";
+        sTitle.innerText = "Bismillah";
+        sText.innerText = "Yeka, your life is a series of answered duas. Tap to see the light Allah has placed in your heart.";
+        sImg.innerText = "🌙";
+        startExperience();
+    }
+
     function startExperience() {
         bgMusic.play().catch(e => {});
         card.style.transform = "translateY(-800px) scale(0.5)";
@@ -82,7 +103,13 @@ game_html = """
         sText.innerText = data.text;
         sImg.innerText = data.img;
         card.style.transform = "translateY(0) scale(1)";
-        if(mKey == 80) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        
+        if(mKey == 80) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            sBtn.innerText = "Restart Journey";
+        } else {
+            sBtn.innerText = "Continue →";
+        }
     }
 
     canvas.addEventListener('touchmove', (e) => {
