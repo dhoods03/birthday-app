@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v25.0) ---
+# --- THE STORY GAME (v26.0) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -62,7 +62,7 @@ game_html = """
         50: { title: "His Plan", text: "What reached you was never meant to miss you. Trust the path He has written for you.", img: "⭐" },
         60: { title: "Noble Character", text: "The best of you are those with the best character. Your kindness is a sign of a noble soul.", img: "🍃" },
         70: { title: "Your Shukr", text: "If you are grateful, He will increase you. May Allah flood your life with blessings.", img: "🌸" },
-        80: { title: "Eid Milad, Yeka!", text: "May Allah grant every secret dua you've ever whispered.", img: "🎁" }
+        80: { title: "Eid Milad, Yeka!", text: "May Allah grant every secret dua you've ever whispered and fill your year with barakah. I truly hope to get to know you more.", img: "🎁" }
     };
 
     function startExperience() {
