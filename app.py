@@ -14,21 +14,28 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v5.0 - ISLAMIC QUOTES EDITION) ---
+# --- THE STORY GAME (v8.0 - AUDIO & MUSIC EDITION) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
     
-    <div id="story-card" style="position: absolute; width: 300px; top: 50px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-2deg); transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);">
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="catch-sound">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="story-card" style="position: absolute; width: 310px; top: 50px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-2deg); transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);">
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
         <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">Bismillah</h3>
-        <p id="card-text" style="color: #555; font-size: 0.95rem; line-height: 1.5; font-style: italic;">Yeka, every year is a new blessing and a chance to grow in grace. Tap to begin this small journey of gratitude.</p>
-        <button id="card-btn" onclick="nextStep()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif;">Start →</button>
+        <p id="card-text" style="color: #555; font-size: 0.95rem; line-height: 1.5; font-style: italic;">Yeka, life is a beautiful journey. Tap to begin a few moments I put together just for you.</p>
+        <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif;">Start & Play →</button>
     </div>
 
     <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.8s;"></canvas>
     
     <div id="score-ui" style="margin-top: 15px; color: #2D5A52; font-weight: bold; font-size: 1.1rem;">
-        Collecting Blessings: <span id="points">0</span> / 40
+        Collecting Blessings: <span id="points">0</span> / 50
     </div>
 </div>
 
@@ -41,6 +48,8 @@ game_html = """
     const sText = document.getElementById('card-text');
     const sImg = document.getElementById('image-placeholder');
     const pointsEl = document.getElementById('points');
+    const bgMusic = document.getElementById('bg-music');
+    const catchSound = document.getElementById('catch-sound');
 
     let score = 0;
     let active = false;
@@ -54,25 +63,20 @@ game_html = """
     }
 
     const milestones = {
-        10: { 
-            title: "On Kindness", 
-            text: "'Kindness is a mark of faith, and whoever is not kind has no faith.' (Prophet Muhammad PBUH). Yeka, your kindness shines so clearly in everything you do.", 
-            img: "✨" 
-        },
-        25: { 
-            title: "On Gratitude", 
-            text: "'If you are grateful, I will surely give you more.' (Qur'an 14:7). Thank you for being a light in my life and for the grace you carry.", 
-            img: "🌸" 
-        },
-        40: { 
-            title: "Eid Milad Yeka!", 
-            text: "'And He has placed between you affection and mercy.' (Qur'an 30:21). May Allah bless your path with peace and endless joy today and always.", 
-            img: "🎁" 
-        }
+        12: { title: "Your Kindness", text: "'Kindness is a mark of faith.' (Prophet Muhammad PBUH). Your gentle spirit is something the world needs more of.", img: "✨" },
+        25: { title: "Thank You", text: "'If you are grateful, I will surely give you more.' (Qur'an 14:7). Thank you for still noticing me, even when I disappear. It means so much.", img: "🤍" },
+        38: { title: "A Beautiful Soul", text: "'Allah is Beautiful and He loves beauty.' (Sahih Muslim). I hope to get to know you even more, Yeka.", img: "🌸" },
+        50: { title: "Eid Milad Yeka!", text: "'And He has placed between you affection and mercy.' (Qur'an 30:21). May your new year be filled with light.", img: "🌙" }
     };
 
+    function startExperience() {
+        bgMusic.volume = 0.3;
+        bgMusic.play();
+        nextStep();
+    }
+
     function nextStep() {
-        if (score >= 40) { location.reload(); return; }
+        if (score >= 50) { location.reload(); return; }
         card.style.transform = "translateY(-700px) rotate(10deg)";
         canvas.style.opacity = "1";
         setTimeout(() => { active = true; }, 600);
@@ -86,20 +90,20 @@ game_html = """
         sImg.innerText = data.img;
         card.style.transform = "translateY(0) rotate(" + (Math.random() * 6 - 3) + "deg)";
         
-        if(score >= 40) {
-            var duration = 5 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) { return clearInterval(interval); }
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#2D5A52', '#D4AF37'] }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#ffffff', '#2D5A52'] }));
-            }, 250);
-            document.getElementById('card-btn').innerText = "Replay";
+        if(score >= 50) {
+            triggerFinalConfetti();
         }
+    }
+
+    function triggerFinalConfetti() {
+        var duration = 6 * 1000;
+        var animationEnd = Date.now() + duration;
+        var interval = setInterval(function() {
+            var timeLeft = animationEnd - Date.now();
+            if (timeLeft <= 0) return clearInterval(interval);
+            confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 }, colors: ['#2D5A52', '#D4AF37', '#ffffff'] });
+        }, 250);
+        document.getElementById('card-btn').innerText = "Replay Journey";
     }
 
     function move(e) {
@@ -108,8 +112,6 @@ game_html = """
         let clientX = e.touches ? e.touches[0].clientX : e.clientX;
         let x = clientX - rect.left;
         basket.x = (x * (canvas.width / rect.width)) - basket.w / 2;
-        if (basket.x < 0) basket.x = 0;
-        if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
     }
 
     canvas.addEventListener('mousemove', move);
@@ -117,27 +119,20 @@ game_html = """
 
     function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         stars.forEach(s => {
             s.opacity += (Math.random() - 0.5) * 0.05;
-            if(s.opacity < 0) s.opacity = 0;
-            if(s.opacity > 1) s.opacity = 1;
+            if(s.opacity < 0) s.opacity = 0; if(s.opacity > 1) s.opacity = 1;
             ctx.fillStyle = `rgba(45, 90, 82, ${s.opacity})`;
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
         });
 
         if (active) {
             frame++;
             if (frame % 35 === 0) {
-                items.push({ x: Math.random() * (canvas.width - 30), y: -20, char: ['🌸','🌙','🎁','🧁','⭐'][Math.floor(Math.random()*5)] });
+                items.push({ x: Math.random() * 370, y: -20, char: ['🌸','🌙','🎁','🍰','⭐'][Math.floor(Math.random()*5)] });
             }
-            
             ctx.fillStyle = '#2D5A52';
-            ctx.beginPath();
-            ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 5);
-            ctx.fill();
+            ctx.beginPath(); ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 5); ctx.fill();
 
             for (let i = items.length - 1; i >= 0; i--) {
                 items[i].y += 4;
@@ -145,11 +140,13 @@ game_html = """
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
                 if (items[i].y > basket.y && items[i].y < basket.y + 20 &&
                     items[i].x > basket.x - 10 && items[i].x < basket.x + basket.w + 10) {
+                    catchSound.currentTime = 0;
+                    catchSound.play();
                     items.splice(i, 1);
                     score++;
                     pointsEl.innerText = score;
                     if (milestones[score]) showCard(milestones[score]);
-                } else if (items[i].y > 510) { items.splice(i, 1); }
+                } else if (items[i].y > 510) items.splice(i, 1);
             }
         }
         requestAnimationFrame(update);
@@ -160,4 +157,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! | v5.0 <br> <i>Blessed with your presence.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! | v8.0 <br> <i>Sound on for a better journey.</i></p>", unsafe_allow_html=True)
