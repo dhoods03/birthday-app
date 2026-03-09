@@ -12,23 +12,23 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='header'>The Collection of Moments</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='header'>A Journey of Moments</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME: EID MILAD YEKA EDITION ---
+# --- THE STORY GAME: SWEET EID MILAD YEKA EDITION ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
     
     <div id="story-card" style="position: absolute; width: 300px; top: 50px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-2deg); transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);">
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
-        <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">The Beginning</h3>
-        <p id="card-text" style="color: #555; font-size: 0.95rem; line-height: 1.5; font-style: italic;">Life is a series of data points, but some points shine brighter than others. Tap to begin the journey, Yeka.</p>
-        <button id="card-btn" onclick="nextStep()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif;">Continue →</button>
+        <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">A Little Surprise</h3>
+        <p id="card-text" style="color: #555; font-size: 0.95rem; line-height: 1.5; font-style: italic;">Yeka, some people make the world feel a little softer and much brighter just by being in it. Tap to begin a small journey I made for you.</p>
+        <button id="card-btn" onclick="nextStep()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif;">Start →</button>
     </div>
 
     <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.8s;"></canvas>
     
     <div id="score-ui" style="margin-top: 15px; color: #2D5A52; font-weight: bold; font-size: 1.1rem;">
-        Joy Collected: <span id="points">0</span> / 40
+        Collecting Joy: <span id="points">0</span> / 40
     </div>
 </div>
 
@@ -49,9 +49,9 @@ game_html = """
     let frame = 0;
 
     const milestones = {
-        10: { title: "A Radiant Soul", text: "Yeka, your presence is a constant in a world of variables. You bring a balance that numbers can't explain.", img: "✨" },
-        25: { title: "Purest Energy", text: "Every interaction with you is a high-value data point. You make the ordinary feel extraordinary.", img: "🌸" },
-        40: { title: "Eid Milad Yeka!", text: "May your day be blessed with peace, your heart with joy, and your life with endless love. You are truly special.", img: "🎁" }
+        10: { title: "Your Warmth", text: "You have a way of making everything feel a bit more peaceful. Your kindness is a gift to everyone who knows you.", img: "✨" },
+        25: { title: "A Rare Soul", text: "It's rare to find someone who is as brilliant as they are gentle. Thank you for being exactly who you are, Yeka.", img: "🌸" },
+        40: { title: "Eid Milad Yeka!", text: "May your day be as beautiful as your heart, and may this new year bring you all the happiness you deserve.", img: "🎁" }
     };
 
     function nextStep() {
@@ -70,13 +70,10 @@ game_html = """
         card.style.transform = "translateY(0) rotate(" + (Math.random() * 6 - 3) + "deg)";
         
         if(score >= 40) {
-            // High-intensity Festive Confetti
             var duration = 5 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
             function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
             var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) { return clearInterval(interval); }
@@ -84,8 +81,7 @@ game_html = """
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#2D5A52', '#D4AF37'] }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#ffffff', '#2D5A52'] }));
             }, 250);
-            
-            document.getElementById('card-btn').innerText = "Replay Journey";
+            document.getElementById('card-btn').innerText = "Play Again";
         }
     }
 
@@ -118,7 +114,6 @@ game_html = """
                 items[i].y += 4;
                 ctx.font = '28px serif';
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
-
                 if (items[i].y > basket.y && items[i].y < basket.y + 20 &&
                     items[i].x > basket.x - 10 && items[i].x < basket.x + basket.w + 10) {
                     items.splice(i, 1);
@@ -136,4 +131,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Optimized for your happiness.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Sending you all the best today and always.</i></p>", unsafe_allow_html=True)
