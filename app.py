@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# --- PAGE CONFIG (FIXED TYPO) ---
+# --- PAGE CONFIG ---
 st.set_page_config(page_title="A Journey for Yeka", page_icon="✨", layout="centered")
 
 st.markdown("""
@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v24.0 - STABLE RELEASE) ---
+# --- THE STORY GAME (v25.0) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -62,7 +62,7 @@ game_html = """
         50: { title: "His Plan", text: "What reached you was never meant to miss you. Trust the path He has written for you.", img: "⭐" },
         60: { title: "Noble Character", text: "The best of you are those with the best character. Your kindness is a sign of a noble soul.", img: "🍃" },
         70: { title: "Your Shukr", text: "If you are grateful, He will increase you. May Allah flood your life with blessings.", img: "🌸" },
-        80: { title: "Eid Milad, Yeka!", text: "You are a living dua. May He answer every prayer you haven't even spoken yet.", img: "🎁" }
+        80: { title: "Eid Milad, Yeka!", text: "May Allah grant every secret dua you've ever whispered.", img: "🎁" }
     };
 
     function startExperience() {
