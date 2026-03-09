@@ -8,13 +8,13 @@ st.markdown("""
     <style>
     .stApp { background-color: #E5E0D8; }
     .header { color: #2D5A52; text-align: center; font-family: 'Georgia', serif; font-style: italic; margin-bottom: 0; }
-    .footer { text-align: center; color: #2D5A52; font-family: 'Georgia', serif; opacity: 0.8; font-size: 0.9rem; margin-top: 20px; }
+    .footer { text-align: center; color: #2D5A52; font-family: 'Georgia', serif; opacity: 0.8; font-size: 0.8rem; margin-top: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
 st.markdown("<h1 class='header'>A Journey of Moments</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME: SWEET EID MILAD YEKA EDITION ---
+# --- THE SWEET STORY GAME (v4.0 - SWEET & SPARKLING) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
     
@@ -46,7 +46,13 @@ game_html = """
     let active = false;
     let basket = { x: 160, y: 440, w: 85, h: 14 };
     let items = [];
+    let stars = [];
     let frame = 0;
+
+    // Create Twinkling Stars
+    for(let i=0; i<30; i++) {
+        stars.push({ x: Math.random()*400, y: Math.random()*500, size: Math.random()*2, opacity: Math.random() });
+    }
 
     const milestones = {
         10: { title: "Your Warmth", text: "You have a way of making everything feel a bit more peaceful. Your kindness is a gift to everyone who knows you.", img: "✨" },
@@ -81,7 +87,7 @@ game_html = """
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#2D5A52', '#D4AF37'] }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#ffffff', '#2D5A52'] }));
             }, 250);
-            document.getElementById('card-btn').innerText = "Play Again";
+            document.getElementById('card-btn').innerText = "Replay";
         }
     }
 
@@ -99,12 +105,26 @@ game_html = """
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e); }, {passive: false});
 
     function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Twinkling Stars
+        stars.forEach(s => {
+            s.opacity += (Math.random() - 0.5) * 0.05;
+            if(s.opacity < 0) s.opacity = 0;
+            if(s.opacity > 1) s.opacity = 1;
+            ctx.fillStyle = `rgba(45, 90, 82, ${s.opacity})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+            ctx.fill();
+        });
+
         if (active) {
             frame++;
             if (frame % 35 === 0) {
                 items.push({ x: Math.random() * (canvas.width - 30), y: -20, char: ['🌸','🌙','🎁','🧁','⭐'][Math.floor(Math.random()*5)] });
             }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw Basket
             ctx.fillStyle = '#2D5A52';
             ctx.beginPath();
             ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 5);
@@ -131,4 +151,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Sending you all the best today and always.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! | v4.0 <br> <i>Sending you all the best today and always.</i></p>", unsafe_allow_html=True)
