@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v21.0 - FUNNY STICKERS EDITION) ---
+# --- THE STORY GAME (v22.0 - PERSONALIZED NOOR EDITION) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -28,7 +28,7 @@ game_html = """
     <div id="story-card" style="position: absolute; width: 310px; top: 40px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-1.5deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
         <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">Bismillah</h3>
-        <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, a soul like yours is a gift. Tap to walk through the wisdom, light, and a few random things you carry in your heart.</p>
+        <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, your life is a series of answered duas. Tap to see the light Allah has placed in your heart.</p>
         <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif; font-size: 1rem;">Begin →</button>
     </div>
 
@@ -58,17 +58,49 @@ game_html = """
     let frame = 0;
 
     const milestones = {
-        10: { title: "On Kindness", text: "'A good word is like a good tree...' (14:24). Your kindness is that beautiful tree, Yeka.", img: "✨" },
-        20: { title: "On Sabr", text: "'Be patient with beautiful patience.' (70:5). Your strength is in how beautifully you remain steady.", img: "🤍" },
-        30: { title: "On Faith", text: "'He found you lost and guided you.' (93:7). Watching you trust His light is a beautiful lesson in Iman.", img: "🌙" },
-        40: { title: "On Sujud", text: "'The closest a servant comes to his Lord is when he is in Sujud.' May your prayers always be your sanctuary.", img: "🤲" },
-        50: { title: "On Qadr", text: "'Allah knows, while you know not.' (2:216). Your trust in His timing is inspiring.", img: "⭐" },
-        60: { title: "On Forgiveness", text: "...if a person forgives, his reward is due from Allah.' (42:40). Your noble heart is proof.", img: "🍃" },
-        70: { title: "On Shukr", text: "'If you are grateful, I will surely increase you.' (14:7). May Allah multiply your joy.", img: "🌸" },
-        80: { title: "Eid Milad Yeka!", text: "May Allah grant every secret dua you've ever whispered. Happy Birthday, Yeka!", img: "🎁" }
+        10: { 
+            title: "Your Soft Heart", 
+            text: "'Should I not tell you of the one who is forbidden from the Fire? Every person who is gentle, soft, and easy-going.' (Tirmidhi). Yeka, your gentleness is your protection and your greatest beauty.", 
+            img: "✨" 
+        },
+        20: { 
+            title: "Your Silent Sabr", 
+            text: "'And give glad tidings to the patient.' (2:155). I see how you handle life's storms with a quiet strength that only comes from a deep trust in Him. Your Sabr is your power.", 
+            img: "🤍" 
+        },
+        30: { 
+            title: "Your Pure Intentions", 
+            text: "'Actions are judged by intentions.' You strive for sincerity in a world of noise. May Allah always keep your heart as pure as it is today, Yeka.", 
+            img: "🌙" 
+        },
+        40: { 
+            title: "Your Light (Noor)", 
+            text: "'Allah is the Light of the heavens and the earth.' (24:35). There is a specific peace you carry that reminds others of Him. Never let the world dim that Noor.", 
+            img: "🤲" 
+        },
+        50: { 
+            title: "His Plan for You", 
+            text: "'What has reached you was never meant to miss you.' (Hadith). Your journey is unique and perfectly written by the Best of Planners. Trust the path He has set for you.", 
+            img: "⭐" 
+        },
+        60: { 
+            title: "Your Noble Character", 
+            text: "'The best of you are those with the best character.' (Bukhari). Your ability to forgive and remain kind when it's difficult is a sign of a truly noble soul.", 
+            img: "🍃" 
+        },
+        70: { 
+            title: "Your Gratitude", 
+            text: "'If you are grateful, I will surely increase you.' (14:7). Because you find the beauty in small things, may Allah flood your life with massive blessings.", 
+            img: "🌸" 
+        },
+        80: { 
+            title: "Eid Milad, Yeka!", 
+            text: "You are a living dua. May Allah grant you a year of ease, deep joy, and answer the prayers you haven't even spoken yet. Happy Birthday!", 
+            img: "🎁" 
+        }
     };
 
-    const funnyStickers = ['😴', '🫠', '😎', '🍕', '🐱', '🥑', '💨'];
+    const funnyStickers = ['😴', '🫠', '😎', '🍕', '🐱', '🥑', '✨'];
 
     function startExperience() {
         bgMusic.muted = false;
@@ -113,7 +145,7 @@ game_html = """
         if (active) {
             frame++;
             if (frame % 22 === 0) {
-                let isFunny = Math.random() > 0.8;
+                let isFunny = Math.random() > 0.85;
                 items.push({ 
                     x: Math.random() * 370, 
                     y: -20, 
@@ -152,4 +184,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Wisdom, Light, and a sleepy cat.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>A reflection of the light you carry.</i></p>", unsafe_allow_html=True)
