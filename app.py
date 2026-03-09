@@ -14,22 +14,25 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>The Collection of Moments</h1>", unsafe_allow_html=True)
 
-# --- THE PREMIUM STORY GAME ---
+# --- THE FIXED PREMIUM STORY GAME ---
 game_html = """
-<div id="wrapper" style="position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif;">
+<div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
     
-    <div id="story-card" style="position: absolute; width: 320px; top: 20px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-2deg); transition: all 0.5s ease;">
-        <div id="image-placeholder" style="width: 100%; height: 200px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3rem;">✨</div>
-        <h3 id="card-title" style="color: #2D5A52; margin-top: 15px;">Chapter 1</h3>
-        <p id="card-text" style="color: #555; font-size: 0.95rem; line-height: 1.4;">Some people make the world brighter just by being in it. Tap to start collecting the stars.</p>
-        <button onclick="nextStep()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer;">Continue →</button>
+    <div id="story-card" style="position: absolute; width: 300px; top: 50px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-2deg); transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);">
+        <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3rem; border-radius: 4px;">✨</div>
+        <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">A New Chapter</h3>
+        <p id="card-text" style="color: #555; font-size: 0.9rem; line-height: 1.4;">Some people make the world brighter just by being in it. Tap to start collecting the stars.</p>
+        <button id="card-btn" onclick="nextStep()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif;">Continue →</button>
     </div>
 
-    <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 100%; opacity: 0.3; transition: opacity 1s;"></canvas>
+    <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border-radius: 20px; border: 4px solid #2D5A52; max-width: 95%; opacity: 0.2; transition: opacity 0.8s;"></canvas>
     
-    <div id="score-ui" style="margin-top: 15px; color: #2D5A52; font-weight: bold;">Progress: <span id="points">0</span> / 40</div>
+    <div id="score-ui" style="margin-top: 15px; color: #2D5A52; font-weight: bold; font-size: 1.1rem;">
+        Progress: <span id="points">0</span> / 40
+    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -48,32 +51,42 @@ game_html = """
     const milestones = {
         10: { title: "The Radiance", text: "In every environment, you're the light that balances the room. Your energy is unmatched.", img: "🌟" },
         25: { title: "The Impact", text: "I've analyzed the data: your kindness has a 100% success rate in making people's days better.", img: "💎" },
-        40: { title: "The Goal", text: "You've reached the end of the journey, but the best part is just beginning...", img: "🎂" }
+        40: { title: "Final Data Point", text: "You've reached the end of the journey, but the best part is just beginning...", img: "🎂" }
     };
 
     function nextStep() {
         if (score >= 40) { location.reload(); return; }
-        card.style.transform = "translateY(-600px) rotate(10deg)";
+        card.style.transform = "translateY(-700px) rotate(10deg)";
         canvas.style.opacity = "1";
-        setTimeout(() => { active = true; }, 500);
+        setTimeout(() => { active = true; }, 600);
     }
 
     function showCard(data) {
         active = false;
-        canvas.style.opacity = "0.3";
+        canvas.style.opacity = "0.2";
         sTitle.innerText = data.title;
         sText.innerText = data.text;
         sImg.innerText = data.img;
         card.style.transform = "translateY(0) rotate(" + (Math.random() * 6 - 3) + "deg)";
+        
+        if(score >= 40) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#2D5A52', '#E5E0D8', '#ffffff'] });
+            document.getElementById('card-btn').innerText = "Play Again";
+        }
     }
 
-    // Controls
     function move(e) {
         if (!active) return;
         let rect = canvas.getBoundingClientRect();
-        let x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-        basket.x = (x * (canvas.width / rect.width)) - basket.w / 2;
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let x = clientX - rect.left;
+        let scaleX = canvas.width / rect.width;
+        basket.x = (x * scaleX) - basket.w / 2;
+        
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
     }
+
     canvas.addEventListener('mousemove', move);
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e); }, {passive: false});
 
@@ -81,24 +94,32 @@ game_html = """
         if (active) {
             frame++;
             if (frame % 40 === 0) {
-                items.push({ x: Math.random() * 370, y: -20, char: ['🌸','✨','🍰','⭐'][Math.floor(Math.random()*4)] });
+                items.push({ x: Math.random() * (canvas.width - 30), y: -20, char: ['🌸','✨','🍰','⭐'][Math.floor(Math.random()*4)] });
             }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw Basket
             ctx.fillStyle = '#2D5A52';
+            ctx.beginPath();
             ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 5);
             ctx.fill();
 
+            // Items Logic
             for (let i = items.length - 1; i >= 0; i--) {
                 items[i].y += 4;
-                ctx.font = '24px serif';
+                ctx.font = '28px serif';
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
 
-                if (items[i].y > basket.y && items[i].x > basket.x && items[i].x < basket.x + basket.w) {
+                // Precise Collision
+                if (items[i].y > basket.y && items[i].y < basket.y + 25 &&
+                    items[i].x > basket.x - 15 && items[i].x < basket.x + basket.w + 5) {
                     items.splice(i, 1);
                     score++;
                     pointsEl.innerText = score;
                     if (milestones[score]) showCard(milestones[score]);
-                } else if (items[i].y > 500) items.splice(i, 1);
+                } else if (items[i].y > 510) {
+                    items.splice(i, 1);
+                }
             }
         }
         requestAnimationFrame(update);
@@ -109,4 +130,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Designed for a very special person. <br> <i>May your year be full of beautiful data.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Created with care. [Signal Stable]</p>", unsafe_allow_html=True)
