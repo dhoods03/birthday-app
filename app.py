@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v12.0 - SACRED MELODIES EDITION) ---
+# --- THE STORY GAME (v13.0 - STRENGTH & GRACE EDITION) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden;">
     
@@ -53,7 +53,7 @@ game_html = """
 
     let score = 0;
     let active = false;
-    let basket = { x: 160, y: 440, w: 85, h: 14 };
+    let basket = { x: 160, y: 440, w: 90, h: 16 }; // Slightly larger for mobile
     let items = [];
     let stars = [];
     let frame = 0;
@@ -70,7 +70,7 @@ game_html = """
         },
         20: { 
             title: "Patience (Sabr)", 
-            text: "'Allah is with the patient.' (2:153). Thank you for your Sabr with me—for still noticing me even when I tend to disappear.", 
+            text: "'Allah is with the patient.' (2:153). Your Sabr is a reflection of your beautiful strength, Yeka. Thank you for being a constant light, even when I am quiet.", 
             img: "🤍" 
         },
         30: { 
