@@ -92,4 +92,72 @@ game_html = """
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
             function randomInRange(min, max) { return Math.random() * (max - min) + min; }
             var interval = setInterval(function() {
-                var timeLeft = animation
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) { return clearInterval(interval); }
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#2D5A52', '#D4AF37'] }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#ffffff', '#2D5A52'] }));
+            }, 250);
+            document.getElementById('card-btn').innerText = "Replay";
+        }
+    }
+
+    function move(e) {
+        if (!active) return;
+        let rect = canvas.getBoundingClientRect();
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let x = clientX - rect.left;
+        basket.x = (x * (canvas.width / rect.width)) - basket.w / 2;
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
+    }
+
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e); }, {passive: false});
+
+    function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        stars.forEach(s => {
+            s.opacity += (Math.random() - 0.5) * 0.05;
+            if(s.opacity < 0) s.opacity = 0;
+            if(s.opacity > 1) s.opacity = 1;
+            ctx.fillStyle = `rgba(45, 90, 82, ${s.opacity})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        if (active) {
+            frame++;
+            if (frame % 35 === 0) {
+                items.push({ x: Math.random() * (canvas.width - 30), y: -20, char: ['🌸','🌙','🎁','🧁','⭐'][Math.floor(Math.random()*5)] });
+            }
+            
+            ctx.fillStyle = '#2D5A52';
+            ctx.beginPath();
+            ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 5);
+            ctx.fill();
+
+            for (let i = items.length - 1; i >= 0; i--) {
+                items[i].y += 4;
+                ctx.font = '28px serif';
+                ctx.fillText(items[i].char, items[i].x, items[i].y);
+                if (items[i].y > basket.y && items[i].y < basket.y + 20 &&
+                    items[i].x > basket.x - 10 && items[i].x < basket.x + basket.w + 10) {
+                    items.splice(i, 1);
+                    score++;
+                    pointsEl.innerText = score;
+                    if (milestones[score]) showCard(milestones[score]);
+                } else if (items[i].y > 510) { items.splice(i, 1); }
+            }
+        }
+        requestAnimationFrame(update);
+    }
+    update();
+</script>
+"""
+
+components.html(game_html, height=650)
+
+st.markdown("<p class='footer'>Eid Milad Yeka! | v5.0 <br> <i>Blessed with your presence.</i></p>", unsafe_allow_html=True)
