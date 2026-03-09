@@ -14,7 +14,7 @@ st.markdown("""
 
 st.markdown("<h1 class='header'>A Journey of Blessings</h1>", unsafe_allow_html=True)
 
-# --- THE STORY GAME (v19.0 - FULL RESTORE) ---
+# --- THE STORY GAME (v21.0 - FUNNY STICKERS EDITION) ---
 game_html = """
 <div id="wrapper" style="position: relative; width: 100%; height: 600px; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif; overflow: hidden; touch-action: none;">
     
@@ -25,12 +25,10 @@ game_html = """
         <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="mute-btn" onclick="toggleMute()" style="position: absolute; bottom: 80px; left: 20px; z-index: 1000; background: rgba(45, 90, 82, 0.7); color: white; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">🔇</div>
-
     <div id="story-card" style="position: absolute; width: 310px; top: 40px; background: #fff; padding: 15px 15px 60px 15px; border: 1px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 100; transform: rotate(-1.5deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         <div id="image-placeholder" style="width: 100%; height: 180px; background: #2D5A52; display: flex; align-items: center; justify-content: center; color: #E5E0D8; font-size: 3.5rem; border-radius: 4px;">🌙</div>
         <h3 id="card-title" style="color: #2D5A52; margin-top: 15px; margin-bottom: 5px;">Bismillah</h3>
-        <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, a soul like yours is a gift. Tap to walk through the wisdom and light that you carry in your heart.</p>
+        <p id="card-text" style="color: #555; font-size: 0.92rem; line-height: 1.5; font-style: italic;">Yeka, a soul like yours is a gift. Tap to walk through the wisdom, light, and a few random things you carry in your heart.</p>
         <button id="card-btn" onclick="startExperience()" style="position: absolute; bottom: 15px; right: 15px; background: #2D5A52; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-family: 'Georgia', serif; font-size: 1rem;">Begin →</button>
     </div>
 
@@ -52,77 +50,30 @@ game_html = """
     const pointsEl = document.getElementById('points');
     const bgMusic = document.getElementById('bg-music');
     const catchSound = document.getElementById('catch-sound');
-    const muteBtn = document.getElementById('mute-btn');
 
     let score = 0;
     let active = false;
-    let isMuted = true;
     let basket = { x: 150, y: 440, w: 100, h: 20 };
     let items = [];
-    let stars = [];
     let frame = 0;
 
-    for(let i=0; i<20; i++) {
-        stars.push({ x: Math.random()*400, y: Math.random()*500, size: Math.random()*1.5 });
-    }
-
     const milestones = {
-        10: { 
-            title: "On Kindness", 
-            text: "'A good word is like a good tree, its root is firmly fixed and its branches reach the sky.' (14:24). Yeka, your kindness is that beautiful tree.", 
-            img: "✨" 
-        },
-        20: { 
-            title: "On Sabr", 
-            text: "'Be patient with beautiful patience.' (70:5). Your strength is in how beautifully you remain steady and constant.", 
-            img: "🤍" 
-        },
-        30: { 
-            title: "On Faith", 
-            text: "'He found you lost and guided you.' (93:7). Watching you trust His light is a beautiful lesson in Iman.", 
-            img: "🌙" 
-        },
-        40: { 
-            title: "On Sujud", 
-            text: "'The closest a servant comes to his Lord is when he is in Sujud.' May your prayers always be your sanctuary.", 
-            img: "🤲" 
-        },
-        50: { 
-            title: "On Qadr", 
-            text: "'Perhaps you love a thing and it is bad for you... Allah knows, while you know not.' (2:216). Your trust in His timing is inspiring.", 
-            img: "⭐" 
-        },
-        60: { 
-            title: "On Forgiveness", 
-            text: "'...but if a person forgives and makes reconciliation, his reward is due from Allah.' (42:40). Your noble heart is proof.", 
-            img: "🍃" 
-        },
-        70: { 
-            title: "On Shukr", 
-            text: "'If you are grateful, I will surely increase you.' (14:7). May Allah multiply your joy for the gratitude you carry.", 
-            img: "🌸" 
-        },
-        80: { 
-            title: "Eid Milad Yeka!", 
-            text: "May Allah grant every secret dua you've ever whispered and bless your new year with mercy. Happy Birthday, Yeka!", 
-            img: "🎁" 
-        }
+        10: { title: "On Kindness", text: "'A good word is like a good tree...' (14:24). Your kindness is that beautiful tree, Yeka.", img: "✨" },
+        20: { title: "On Sabr", text: "'Be patient with beautiful patience.' (70:5). Your strength is in how beautifully you remain steady.", img: "🤍" },
+        30: { title: "On Faith", text: "'He found you lost and guided you.' (93:7). Watching you trust His light is a beautiful lesson in Iman.", img: "🌙" },
+        40: { title: "On Sujud", text: "'The closest a servant comes to his Lord is when he is in Sujud.' May your prayers always be your sanctuary.", img: "🤲" },
+        50: { title: "On Qadr", text: "'Allah knows, while you know not.' (2:216). Your trust in His timing is inspiring.", img: "⭐" },
+        60: { title: "On Forgiveness", text: "...if a person forgives, his reward is due from Allah.' (42:40). Your noble heart is proof.", img: "🍃" },
+        70: { title: "On Shukr", text: "'If you are grateful, I will surely increase you.' (14:7). May Allah multiply your joy.", img: "🌸" },
+        80: { title: "Eid Milad Yeka!", text: "May Allah grant every secret dua you've ever whispered. Happy Birthday, Yeka!", img: "🎁" }
     };
 
-    function toggleMute() {
-        isMuted = !isMuted;
-        bgMusic.muted = isMuted;
-        catchSound.muted = isMuted;
-        muteBtn.innerText = isMuted ? "🔇" : "🔊";
-        if (!isMuted) bgMusic.play();
-    }
+    const funnyStickers = ['😴', '🫠', '😎', '🍕', '🐱', '🥑', '💨'];
 
     function startExperience() {
-        isMuted = false;
         bgMusic.muted = false;
-        muteBtn.innerText = "🔊";
+        catchSound.muted = false;
         bgMusic.play().catch(e => console.log("Audio play blocked"));
-        
         card.style.transform = "translateY(-800px) scale(0.5)";
         canvas.style.opacity = "1";
         setTimeout(() => { active = true; }, 500);
@@ -149,8 +100,6 @@ game_html = """
         let touchX = e.touches[0].clientX - rect.left;
         let scaleX = canvas.width / rect.width;
         basket.x = (touchX * scaleX) - basket.w / 2;
-        if (basket.x < 0) basket.x = 0;
-        if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
     }
 
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleTouch(e); }, {passive: false});
@@ -161,32 +110,37 @@ game_html = """
 
     function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(45, 90, 82, 0.3)";
-        stars.forEach(s => {
-            ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
-        });
-
         if (active) {
             frame++;
-            if (frame % 25 === 0) {
-                items.push({ x: Math.random() * 370, y: -20, char: ['🌸','🌙','🎁','🤲','⭐'][Math.floor(Math.random()*5)] });
+            if (frame % 22 === 0) {
+                let isFunny = Math.random() > 0.8;
+                items.push({ 
+                    x: Math.random() * 370, 
+                    y: -20, 
+                    char: isFunny ? funnyStickers[Math.floor(Math.random()*funnyStickers.length)] : ['🌸','🌙','🎁','🤲','⭐'][Math.floor(Math.random()*5)],
+                    type: isFunny ? 'joke' : 'blessing'
+                });
             }
+            
             ctx.fillStyle = '#2D5A52';
             ctx.beginPath(); ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 10); ctx.fill();
 
             for (let i = items.length - 1; i >= 0; i--) {
-                items[i].y += 6.5; 
+                items[i].y += 7; 
                 ctx.font = '32px serif';
                 ctx.fillText(items[i].char, items[i].x, items[i].y);
                 
                 if (items[i].y > basket.y && items[i].y < basket.y + 25 &&
                     items[i].x > basket.x - 15 && items[i].x < basket.x + basket.w + 15) {
-                    catchSound.currentTime = 0;
-                    catchSound.play();
+                    
+                    if(items[i].type === 'blessing') {
+                        catchSound.currentTime = 0;
+                        catchSound.play();
+                        score++;
+                        pointsEl.innerText = score;
+                        if (milestones[score]) showCard(milestones[score]);
+                    }
                     items.splice(i, 1);
-                    score++;
-                    pointsEl.innerText = score;
-                    if (milestones[score]) showCard(milestones[score]);
                 } else if (items[i].y > 520) items.splice(i, 1);
             }
         }
@@ -198,4 +152,4 @@ game_html = """
 
 components.html(game_html, height=650)
 
-st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Optimized for mobile audio and performance.</i></p>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Eid Milad Yeka! <br> <i>Wisdom, Light, and a sleepy cat.</i></p>", unsafe_allow_html=True)
