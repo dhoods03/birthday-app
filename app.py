@@ -2,111 +2,119 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="For You", page_icon="🌙", layout="centered")
+st.set_page_config(page_title="Birthday Catch!", page_icon="🎮", layout="centered")
 
-# --- CUSTOM CSS ---
 st.markdown("""
     <style>
     .stApp { background-color: #E5E0D8; }
-    .title { 
-        color: #2D5A52; 
-        font-family: 'Georgia', serif; 
-        text-align: center; 
-        margin-top: 30px;
-        font-style: italic;
-    }
+    .header { color: #2D5A52; text-align: center; font-family: 'Helvetica', sans-serif; margin-bottom: 0; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='title'>The Frequency of You</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='header'>THE JOY COLLECTOR</h1>", unsafe_allow_html=True)
 
-# --- THE ROMANTIC OSCILLOSCOPE (HTML/JS) ---
-osc_html = """
-<div id="container" style="background: #E5E0D8; display: flex; flex-direction: column; align-items: center; font-family: 'Georgia', serif;">
-    <canvas id="canvas" style="width: 100%; height: 350px; background: #E5E0D8; cursor: pointer;"></canvas>
-    <div id="msg" style="margin-top: 10px; color: #2D5A52; font-size: 1.1rem; text-align: center; font-style: italic;">
-        The world is quiet... <br>Tap the heart and say something beautiful.
+# --- THE MINI GAME (HTML5 CANVAS) ---
+game_html = """
+<div id="game-container" style="background: #E5E0D8; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; touch-action: none;">
+    <canvas id="gameCanvas" width="400" height="500" style="background: #ffffff; border: 4px solid #2D5A52; border-radius: 15px; cursor: crosshair; max-width: 100%;"></canvas>
+    <div id="ui" style="margin-top: 15px; color: #2D5A52; text-align: center;">
+        <h2 id="score">Score: 0 / 10</h2>
+        <p id="hint">Drag to catch the falling emeralds!</p>
     </div>
 </div>
 
 <script>
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const msg = document.getElementById('msg');
-    
-    let audioCtx, analyser, dataArray, bufferLength;
-    let revealed = false;
-    let glow = 0;
+    const scoreEl = document.getElementById('score');
+    const hintEl = document.getElementById('hint');
 
-    function init() {
-        if (audioCtx) return;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 1024;
+    let score = 0;
+    let gameOver = false;
+    let basket = { x: 175, y: 450, w: 70, h: 20 };
+    let items = [];
+    let frame = 0;
 
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            const source = audioCtx.createMediaStreamSource(stream);
-            source.connect(analyser);
-            bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-            msg.innerHTML = "Your voice makes the heart beat... <br>Keep speaking to unlock your message.";
-            draw();
+    // Movement logic (Mouse & Touch)
+    function move(e) {
+        let rect = canvas.getBoundingClientRect();
+        let root = document.documentElement;
+        let mouseX = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+        basket.x = mouseX - basket.w / 2;
+        
+        // Keep basket in bounds
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
+    }
+
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e); }, {passive: false});
+
+    function spawnItem() {
+        const types = ['🎂', '🎈', '✨', '🎁', '⭐'];
+        items.push({
+            x: Math.random() * (canvas.width - 30),
+            y: -30,
+            speed: 2 + Math.random() * 3,
+            char: types[Math.floor(Math.random() * types.length)]
         });
     }
 
-    function draw() {
-        if (revealed) return;
-        requestAnimationFrame(draw);
-        analyser.getByteTimeDomainData(dataArray);
+    function update() {
+        if (gameOver) return;
+        frame++;
+        if (frame % 40 === 0) spawnItem();
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        let volume = 0;
-        for (let i = 0; i < bufferLength; i++) {
-            volume += Math.abs(128 - dataArray[i]);
-        }
 
-        // Heart pulsing logic
-        let pulse = 1 + (volume / 2000); 
-        if (volume > 500) glow += 0.5;
-
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        
-        // Draw the Oscilloscope Heart
-        ctx.strokeStyle = '#2D5A52';
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#2D5A52';
-        ctx.lineWidth = 4;
+        // Draw Basket
+        ctx.fillStyle = '#2D5A52';
         ctx.beginPath();
+        ctx.roundRect(basket.x, basket.y, basket.w, basket.h, 10);
+        ctx.fill();
 
-        // Parametric Heart Formula modified by audio data
-        for (let i = 0; i <= Math.PI * 2; i += 0.05) {
-            let audioMod = (dataArray[Math.floor(i * 10)] / 128.0) - 1.0;
-            let r = (1 - Math.sin(i)) * (pulse + audioMod * 0.5);
-            let x = centerX + 100 * r * Math.cos(i);
-            let y = centerY - 130 * r * Math.sin(i) + 50; 
-            
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.stroke();
+        // Draw and update Items
+        for (let i = items.length - 1; i >= 0; i--) {
+            let item = items[i];
+            item.y += item.speed;
 
-        if (glow >= 100) {
-            revealed = true;
-            msg.innerHTML = "<h1 style='font-size: 2.5rem; margin:0; color: #2D5A52;'>ENJOY YOUR DAY!</h1><p style='color: #2D5A52;'>You are the only frequency I ever want to hear.</p>";
-            // Static glowing heart
-            ctx.shadowBlur = 30;
-            ctx.stroke();
+            ctx.font = '24px serif';
+            ctx.fillText(item.char, item.x, item.y);
+
+            // Collision Check
+            if (item.y > basket.y && item.y < basket.y + basket.h && 
+                item.x > basket.x && item.x < basket.x + basket.w) {
+                items.splice(i, 1);
+                score++;
+                scoreEl.innerText = "Score: " + score + " / 10";
+                
+                if (score >= 10) {
+                    win();
+                }
+            } else if (item.y > canvas.height) {
+                items.splice(i, 1);
+            }
         }
+        requestAnimationFrame(update);
     }
 
-    canvas.addEventListener('click', init);
+    function win() {
+        gameOver = true;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#2D5A52';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 30px Helvetica';
+        ctx.fillText("ENJOY YOUR DAY!", canvas.width/2, canvas.height/2);
+        ctx.font = '16px Helvetica';
+        ctx.fillText("You've collected enough joy for the year!", canvas.width/2, canvas.height/2 + 40);
+        hintEl.innerText = "🎉 Mission Accomplished! 🎉";
+    }
+
+    update();
 </script>
 """
 
-components.html(osc_html, height=500)
+components.html(game_html, height=650)
 
-st.write("---")
-st.markdown("<p style='text-align: center; color: #2D5A52; font-style: italic; opacity: 0.6;'>Created with love just for you.</p>", unsafe_allow_html=True)
+st.divider()
+st.markdown("<p style='text-align: center; color: #2D5A52; opacity: 0.6;'>System Calibration: SUCCESS | Happiness Levels: OPTIMAL</p>", unsafe_allow_html=True)
